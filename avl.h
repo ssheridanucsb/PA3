@@ -2,6 +2,7 @@
 #define AVL_H
 
 #include <string>
+#include <iostream>
 
 using namespace std; 
 
@@ -32,9 +33,9 @@ class AVL{
     int insert(string word);
     
     //range search
-    void rangeSearch(string first, string last) const;
-    //preOrder and Height
-    void preOrder() const;
+    void rangeSearch(string s1, string s2) const;
+    //traversal and Height
+    void printTraversal(Node* n) const;
     void printHeight() const; 
 
     private:
@@ -53,9 +54,9 @@ class AVL{
     Node* getNodeFor(string word, Node* n) const; 
 
     //recursive helper function for insert
-    Node* AVL::insertHelper(string word, Node* n);
+    Node* insertHelper(string word, Node* n);
 
-
+    void rangeSearchHelper(Node* n, string s1, string s2) const;
 
 };
 

@@ -85,7 +85,8 @@ int AVL::search(string word) const{
 };
 
 int AVL::insert(string word){
-
+    Node *n = insertHelper(word, root);
+    return n->count; 
 };
 
 
@@ -136,3 +137,24 @@ Node* AVL::insertHelper(string word, Node* n){
     return n; 
 
 };
+
+void AVL::rangeSearchHelper(Node* n, string s1, string s2) const{
+    if(!n) return;
+    if(s1 < n->word) rangeSearchHelper(n->left, s1, s2);
+    if(s1<=n->word && s2>=n->word){
+        cout << n->word << endl;
+    }
+    if(s2 > n->word) rangeSearchHelper(n->right, s1, s2);
+};
+
+void AVL::rangeSearch(string s1, string s2) const{
+  rangeSearchHelper(root, s1, s2);
+};
+
+void printTraversal(Node* n) const{
+   
+};
+
+void AVL::printHeight() const{
+    cout << "Height = [" << root->height << "]" << endl; 
+}
