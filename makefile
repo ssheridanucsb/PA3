@@ -14,5 +14,12 @@ avl.o: avl.cpp
 twofive.o: twofive.cpp
 	${CXX} ${CXXFLAGS} twofive.cpp -c
 
+test: test.o avl.o twofive.o
+	${CXX} ${CXXFLAGS} $^ -o $@
+
+test.o: test.cpp
+	${CXX} ${CXXFLAGS} $^ -c
+
+
 clean: 
 	/bin/rm -f prog3.out *.o
