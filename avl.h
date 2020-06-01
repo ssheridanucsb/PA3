@@ -35,7 +35,7 @@ class AVL{
     //range search
     void rangeSearch(string s1, string s2) const;
     //traversal and Height
-    void printTraversal(Node* n) const;
+    void printTraversal() const;
     void printHeight() const; 
 
     private:
@@ -57,6 +57,8 @@ class AVL{
     Node* insertHelper(string word, Node* n);
 
     void rangeSearchHelper(Node* n, string s1, string s2) const;
+
+    void printHelper(Node* n) const;
 
 };
 

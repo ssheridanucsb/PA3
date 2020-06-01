@@ -10,6 +10,7 @@ AVL::~AVL(){
 
 //return height of node
 int AVL::height(Node* n) const{
+    if(n==NULL) return 0; 
     return n->height;
 };
 
@@ -85,57 +86,39 @@ int AVL::search(string word) const{
 };
 
 int AVL::insert(string word){
-    Node *n = insertHelper(word, root);
-    return n->count; 
+  root = insertHelper(word, root);
+  return getNodeFor(word, root)->count;
 };
 
 
 Node* AVL::insertHelper(string word, Node* n){
     if(n==NULL){
-        n = new Node(word);
+        Node * t = new Node(word);
+        return t;
     }
-
-    if(word < n->word){
-        n->left = insertHelper(word, n->left);
+    if(word < n->word) n->left = insertHelper(word, n->left);
+    else if(word == n->word){
+        n->count++;
     }
-    else if(word > n->word){
-        n->right = insertHelper(word, n->right);
+    else if(word > n->word) n->right = insertHelper(word, n->right);
+    n->height = 1 + max(height(n->left), height(n->right));
+    int bal = balanceFactor(n);
+    if(bal > 2){
+        if(word < n->left->word){
+            return rightRotate(n);
+        }else{
+            n->left = leftRotate(n->left);
+            return rightRotate(n);
+        }
+    }else if(bal < -2){
+        if(word > n->right->word){
+            return leftRotate(n);
+        } else{
+            n->right = rightRotate(n->right);
+            return leftRotate(n);
+        }
     }
-    else
-    {
-        (n->count)++;
-        return n; 
-    }
-
-    n->height = max(height(n->left), height(n->right)) + 1;
-
-    int balance = balanceFactor(n);
-
-    //left left
-
-    if(balance > 2 && word < n->left->word){
-        return rightRotate(n);
-    };
-
-    //right right
-    if(balance < -2 && word > n->right->word){
-        return leftRotate(n);
-    };
-
-    //left right
-    if(balance > 2 && word > n->left->word){
-        n->left = leftRotate(n->left);
-        return rightRotate(n);
-    }
-
-    //right left 
-    if(balance < -2 && word <n->right->word){
-        n->right = rightRotate(n->right);
-        return leftRotate(n);
-    }
-    
     return n; 
-
 };
 
 void AVL::rangeSearchHelper(Node* n, string s1, string s2) const{
@@ -151,10 +134,23 @@ void AVL::rangeSearch(string s1, string s2) const{
   rangeSearchHelper(root, s1, s2);
 };
 
-void printTraversal(Node* n) const{
-   
+void AVL::printTraversal() const{
+    cout << "(" ;
+    printHelper(root);
+    cout << ")";
+};
+
+void AVL::printHelper(Node* n) const{
+    if(!n) {cout << "()";}
+    else{
+        cout << "(" <<  n->word << ":" << n->count;
+        printHelper(n->left);
+        printHelper(n->right);
+        cout << ")";
+    }
 };
 
 void AVL::printHeight() const{
     cout << "Height = [" << root->height << "]" << endl; 
+
 }
