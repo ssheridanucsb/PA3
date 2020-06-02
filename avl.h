@@ -35,6 +35,7 @@ class AVL{
     //range search
     void rangeSearch(string s1, string s2) const;
     //traversal and Height
+    // simply call AVL.printTraversal() and AVL.printHeight() to use 
     void printTraversal() const;
     void printHeight() const; 
 
