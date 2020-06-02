@@ -70,6 +70,9 @@ class TwoFive{
     //split helper functions 
     TwoFiveNode* split(TwoFiveNode* n);
 
+    //recursive search helper funciton 
+    TwoFiveNode* searchHelper(TwoFiveNode* n, string s) const; 
+
 };
 
 
