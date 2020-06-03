@@ -3,7 +3,7 @@
 
 #include <string>
 #include <utility>
-#include <vector> 
+#include <iostream>
 
 using namespace std; 
 
@@ -35,6 +35,18 @@ struct TwoFiveNode{
         delete [] children; 
     };
 
+    bool contains(string word){
+        for(int i = 0; i < key_length; i++){
+            if(keys[i].first == word) return true;   
+        }
+        return false; 
+    }
+
+    void increment(string word){
+         for(int i = 0; i < key_length; i++){
+            if(keys[i].first == word) keys[i].second++;    
+        }
+    }
 };
 
 class TwoFive{
@@ -68,10 +80,13 @@ class TwoFive{
     TwoFiveNode* insertHelper(string word, TwoFiveNode* n);
 
     //split helper functions 
-    TwoFiveNode* split(TwoFiveNode* n);
+    TwoFiveNode* split(TwoFiveNode* n, string word);
 
     //recursive search helper funciton 
     TwoFiveNode* searchHelper(TwoFiveNode* n, string s) const; 
+
+    //check if node contains value
+    bool nodeContains(string word) const; 
 
 };
 
