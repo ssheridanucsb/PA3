@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <iostream>
+#include <algorithm>
 
 using namespace std; 
 
@@ -19,6 +20,8 @@ struct TwoFiveNode{
     //length of child pointer array; 
     int child_length;  
 
+    TwoFiveNode* parent; 
+
     //constructor
     TwoFiveNode(string word){
         pair<string, int> p(word, 1);
@@ -29,7 +32,18 @@ struct TwoFiveNode{
         height = 1; 
         key_length = 1; 
         child_length = 0; 
+        parent = NULL;
     };
+    //default constructor 
+    TwoFiveNode(){
+        for(int i = 1; i < 5; i++){
+            children[i] = NULL; 
+        };
+        height = 1; 
+        key_length = 0; 
+        child_length = 0; 
+        parent = NULL;
+    }
     //recursive destructor 
     ~TwoFiveNode(){
         delete [] children; 
@@ -45,6 +59,12 @@ struct TwoFiveNode{
     void increment(string word){
          for(int i = 0; i < key_length; i++){
             if(keys[i].first == word) keys[i].second++;    
+        }
+    }
+
+    int count(string word){
+        for(int i = 0; i < key_length; i++){
+            if(keys[i].first == word) return keys[i].second;     
         }
     }
 };
@@ -80,7 +100,7 @@ class TwoFive{
     TwoFiveNode* insertHelper(string word, TwoFiveNode* n);
 
     //split helper functions 
-    TwoFiveNode* split(TwoFiveNode* n, string word);
+    TwoFiveNode* split(TwoFiveNode* n, TwoFiveNode* wordNode);
 
     //recursive search helper funciton 
     TwoFiveNode* searchHelper(TwoFiveNode* n, string s) const; 
