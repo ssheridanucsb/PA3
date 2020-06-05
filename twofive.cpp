@@ -29,7 +29,21 @@ int TwoFive::search(string word) const{
 }; 
 
 //range serach
-void TwoFive::rangeSearch(string s1, string s2) const{};
+void TwoFive::rangeSearch(string s1, string s2) const{
+    rangeSearchHelper(s1, s2, root);
+};
+
+void TwoFive::rangeSearchHelper(string s1, string s2, TwoFiveNode* n) const {
+    if(n==NULL) return; 
+    for(int i = 0; i < n->key_length; i++){
+        if(s1 <= n->keys[i].first && s2 >= n->keys[i].first){
+            cout << n->keys[i].first << endl; 
+        }
+    }
+    for(int i = 0; i < n->child_length; i++){
+        rangeSearchHelper(s1, s2, n->children[i]);
+    }
+};
 
 //print height by calling TwoFive.printHeight()
 void TwoFive::printHeight() const {
@@ -41,7 +55,28 @@ void TwoFive::printHeight() const {
 };
 
 //print traversal by calling TwoFive.printTraversal()
-void TwoFive::printTraversal(){};
+void TwoFive::printTraversal() const{
+    printHelper(root);
+};
+
+void TwoFive::printHelper(TwoFiveNode* n) const {
+    if(n==NULL){
+        cout << "()"; 
+    }
+    else{
+        cout << "("; 
+        for(int i = 0; i < n->key_length; i++){
+            cout << n->keys[i].first << ":" << n->keys[i].second;
+            if(i < n->key_length - 1){
+                cout << ","; 
+            }
+        }
+        for(int i = 0; i < 5; i++){
+            printHelper(n->children[i]);
+        }
+        cout << ")";
+    }
+};
 
 
 //recursive insert helper function

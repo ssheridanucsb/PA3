@@ -93,7 +93,7 @@ class TwoFive{
     void printHeight() const;
 
     //print traversal by calling TwoFive.printTraversal()
-    void printTraversal();
+    void printTraversal() const;
 
     private: 
     //root pointer
@@ -108,8 +108,10 @@ class TwoFive{
     //recursive search helper funciton 
     TwoFiveNode* searchHelper(TwoFiveNode* n, string s) const; 
 
-    //check if node contains value
-    bool nodeContains(string word) const; 
+    void rangeSearchHelper(string s1, string s2, TwoFiveNode* n) const;
+
+    void printHelper(TwoFiveNode* n) const;
+
 
 };
 
