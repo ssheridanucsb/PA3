@@ -82,7 +82,29 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* wordNode){
         root = wordNode;
         return root; 
     }else if(n->key_length!=4){
-    
+        //find where key should be inserted 
+        int j = 0; 
+        for(int i = 0; i < n->key_length; i++){
+            if(n->keys[i] < wordNode->keys[0]) j++; 
+        }
+
+        //insert word from wordNode and update pointers. 
+        for(int i = n->key_length; i >= j; i--){
+            n->keys[i+1] = n->keys[i]; 
+        }
+        //insert word from wordNode
+        n->keys[j] = wordNode->keys[0];
+
+        //update pointers 
+        for(int i = n->child_length; i > j; i--){
+            n->children[i+1] = n->children[i]; 
+        }
+        n->children[j] = wordNode->children[0];
+        n->children[j+1] = wordNode->children[1];
+        wordNode->children[0] = NULL;
+        wordNode->children[1] = NULL; 
+        delete wordNode; 
+        return n; 
 
     }else{
         //create singular node with desired word to insert  
