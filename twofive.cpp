@@ -10,8 +10,12 @@ TwoFive::~TwoFive(){
 
 //insert
 int TwoFive::insert(string word){
-    TwoFiveNode* n = insertHelper(word, root);
-    return n->count; 
+    if(root==NULL){
+        root = insertHelper(word, root);
+        return root->count(word); 
+    }
+    insertHelper(word, root);
+    return search(word); 
 };
 //search
 int TwoFive::search(string word) const{
@@ -51,6 +55,7 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
     else if(n->contains(word)){
         //increment word
         n->increment(word);
+        return n; 
     }// if not a leaf node 
     else if(n->child_length!=0){
         TwoFiveNode* p = n->children[0];
@@ -68,7 +73,7 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
     }//else empty leaf 
     else{
         //add key to the end of the list
-        n->keys[n->key_length] = pair(word, 1);
+        n->keys[n->key_length] = pair<string, int>(word, 1);
         n->key_length++;
         sort(n->keys, n->keys + n->key_length);
         return n;  
@@ -80,6 +85,7 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
 TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* wordNode){
     if(n==NULL){
         root = wordNode;
+        root->height++; 
         return root; 
     }else if(n->key_length!=4){
         //find where key should be inserted 
@@ -128,7 +134,7 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* wordNode){
         for(int i = 0; i < n->key_length; i++){
             s[i] = n->keys[i];
         }
-        s[5] = wordNode->keys[0];
+        s[4] = wordNode->keys[0];
         sort(s, s + 5);
         int med = 5/3;
 

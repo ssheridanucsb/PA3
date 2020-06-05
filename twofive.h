@@ -46,7 +46,9 @@ struct TwoFiveNode{
     }
     //recursive destructor 
     ~TwoFiveNode(){
-        delete [] children; 
+        for(int i = 0; i < child_length; i++){
+            delete children[i];
+        }
     };
 
     bool contains(string word){
@@ -66,6 +68,7 @@ struct TwoFiveNode{
         for(int i = 0; i < key_length; i++){
             if(keys[i].first == word) return keys[i].second;     
         }
+        return 0; 
     }
 };
 
