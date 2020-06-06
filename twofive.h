@@ -12,7 +12,7 @@ struct TwoFiveNode{
     //key/values 
     pair<string, int> keys[5]; //extra value fold help inserting;
     //children
-    TwoFiveNode* children [6]; //extra value for help inserting;
+    TwoFiveNode* children [5]; 
     //height
     int height;
     //lenth of key array
@@ -110,7 +110,7 @@ class TwoFive{
     TwoFiveNode* insertHelper(string word, TwoFiveNode* n);
 
     //split helper functions 
-    TwoFiveNode* split(TwoFiveNode* n, TwoFiveNode* wordNode);
+    TwoFiveNode* split(TwoFiveNode* n, TwoFiveNode* m);
 
     //recursive search helper funciton 
     TwoFiveNode* searchHelper(TwoFiveNode* n, string s) const; 

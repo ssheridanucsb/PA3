@@ -8,15 +8,6 @@ TwoFive::~TwoFive(){
     delete root; 
 }; 
 
-//insert
-int TwoFive::insert(string word){
-    if(root==NULL){
-        root = insertHelper(word, root);
-        return root->count(word); 
-    }
-    insertHelper(word, root);
-    return search(word); 
-};
 //search
 int TwoFive::search(string word) const{
     TwoFiveNode* n = searchHelper(root, word);
@@ -74,141 +65,139 @@ void TwoFive::printHelper(TwoFiveNode* n) const {
     }
 };
 
-
+int TwoFive::insert(string word){
+    if(root==NULL){
+        root = new TwoFiveNode(word);
+        return 1; 
+    }
+    insertHelper(word, root);
+    return search(word); 
+};
 //recursive insert helper function
 TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
-    //if null
-    if(n==NULL){
-        //add new node
-        n = new TwoFiveNode(word);
-        return n; 
-    } //if node contains word
-    else if(n->contains(word)){
-        //increment word
-        n->increment(word);
-        return n; 
-    }// if not a leaf node 
-    else if(n->child_length!=0){
+    //if is not leaf, find correct path to follow 
+    if(n->child_length!=0){
+        //check if node contains word and increment 
+        if(n->contains(word)){
+            n->increment(word); 
+            return n; 
+        }
+
         TwoFiveNode* p = n->children[0];
         for(int i = 0; i < n->key_length; i++){
-            string w = n->keys[i].first;
-            if(word > w){
-                p = n->children[i+1];
+            if(word > n->keys[i].first){
+                p = n->children[i+1]; 
             }
         }
+        //recursive call to new path 
         return insertHelper(word, p); 
-    }// if node is full leaf 
-    else if(n->key_length==4 && n->child_length==0){
-        TwoFiveNode* w = new TwoFiveNode(word);
-        return split(n, w); 
-    }//else empty leaf 
-    else{
-        //add key to the end of the list
-        n->keys[n->key_length] = pair<string, int>(word, 1);
-        n->key_length++;
+
+    }else if(n->key_length < 4){//if n is empty leaf insert
+    //check if contains word and increment if so 
+    if(n->contains(word)){
+            n->increment(word); 
+            return n; 
+        }
+        //otherwise add the word to the leaf 
+        n->keys[n->key_length] = pair<string, int>(word, 1); 
+        n->key_length++; 
         sort(n->keys, n->keys + n->key_length);
-        return n;  
+        return n; 
+
+    }else{//if n is a full leaf split
+        if(n->contains(word)){
+            n->increment(word); 
+            return n; 
+        }
+        TwoFiveNode* m = new TwoFiveNode(word);
+        return split(n, m);
     }
 };
 
 
 //split helper functions 
-TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* wordNode){
+TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
     if(n==NULL){
-        root = wordNode;
+        root = m; 
         root->height++; 
         return root; 
     }else if(n->key_length!=4){
-        //find where key should be inserted 
-        int j = 0; 
-        for(int i = 0; i < n->key_length; i++){
-            if(n->keys[i] < wordNode->keys[0]) j++; 
+        n->keys[n->key_length] = m->keys[0];
+        n->key_length++; 
+        sort(n->keys, n->keys + n->key_length); 
+        for(int i = 0; i < 5; i++){
+            if(n->children[i]==m){
+                for(int j = 4; j > i; j--){
+                    n->children[j+1] = n->children[j]; 
+                }
+                n->children[i] = m->children[0]; 
+                n->children[i+1] = m->children[1]; 
+                n->child_length++; 
+            }
         }
 
-        //insert word from wordNode and update pointers. 
-        for(int i = n->key_length; i >= j; i--){
-            n->keys[i+1] = n->keys[i]; 
+        for(int i = 0; i < 5; i++){
+            m->children[i] = NULL; 
         }
-        //insert word from wordNode
-        n->keys[j] = wordNode->keys[0];
-
-        //update pointers 
-        for(int i = n->child_length; i > j; i--){
-            n->children[i+1] = n->children[i]; 
-        }
-        n->children[j] = wordNode->children[0];
-        n->children[j+1] = wordNode->children[1];
-        wordNode->children[0] = NULL;
-        wordNode->children[1] = NULL; 
-        delete wordNode; 
+        delete m; 
         return n; 
 
     }else{
-        //create singular node with desired word to insert  
-        wordNode->parent = n->parent; 
-        //create left and right nodes to split n 
-        TwoFiveNode* left = new TwoFiveNode;
-        left->parent = wordNode; 
-        TwoFiveNode* right = new TwoFiveNode;
-        right->parent = wordNode;
-        //if theres a parent change the parents pointer to new wordNode
-        if(wordNode->parent!=NULL){
-            TwoFiveNode* p = wordNode->parent; 
-            for(int i = 0; i < p->child_length; i++){
-                if(p->children[i]==n){
-                    p->children[i]=wordNode; 
-                }
+        n->keys[4] = m->keys[0];
+        sort(n->keys, n->keys+5); 
+        int med = 5/2; 
+        pair<string, int> medP = n->keys[med]; 
+
+        //create left and right nodes
+        TwoFiveNode* left = new TwoFiveNode; 
+        TwoFiveNode* right = new TwoFiveNode; 
+
+        m->parent = n->parent; 
+        m->children[0] = left; 
+        m->child_length++; 
+        m->children[1] = right; 
+        m->child_length++;
+
+        if(n->parent!=NULL){
+            for(int i = 0; i < 5; i++){
+                if(n->parent->children[i] == n) n->parent->children[i] = m; 
             }
         }
-        n->keys[4] = wordNode->keys[0];
-        int k; 
-        for(int i = 4; i > 0; i--){
-            if(n->keys[i] < n->keys[i-1]){
-                pair<string, int> temp = n->keys[i];
-                n->keys[i] = n->keys[i-1];
-                n->keys[i-1] = temp; 
-                int k = i-1; 
-            }
-        }
-      
-        int med = 2;
-        //NEED TO INCLUDE POINTERS WHEN UPDATING LEFT AND RIGHT 
-        //words less than medValue go in left node, greater go in right node
+
+        //split values
         for(int i = 0; i < 5; i++){
-            if (i < med)
-            {
-                left->keys[left->key_length] = n->keys[i];
+            if(i < med){
+                left->keys[left->key_length] = n->keys[i]; 
                 left->key_length++; 
-            } else if(i==med){
-                wordNode->keys[0] = n->keys[i];
+            }else if(i == med){
+                m->keys[0] = n->keys[i];
             }else{
-                right->keys[right->key_length] = n->keys[i];
+                right->keys[right->key_length] = n->keys[i]; 
                 right->key_length++; 
             }
         }
+
+        //split child pointers
         for(int i = 0; i < 5; i++){
-            if(i <= k){
-                left->children[i] = n->children[i];
-                if(n->children[i]!=NULL) left->child_length++; 
-            }else{
-                right->children[i] = n->children[i];
-                if(n->children[i]!=NULL) right->child_length++; 
+            if(n->children[i] != NULL){
+                if(n->children[i]->keys[0] < n->keys[med]){
+                    left->children[left->child_length] = n->children[i]; 
+                    left->child_length++; 
+                }else{
+                    right->children[right->child_length] = n->children[i]; 
+                    right->child_length++; 
+                }
+
             }
         }
-        
-        wordNode->children[0] = left; 
-        wordNode->child_length++; 
-        wordNode->children[1] = right; 
-        wordNode->child_length++; 
 
-        for(int i = 0; i < 6; i++){
+
+        for(int i = 0; i < 5; i++){
             n->children[i] = NULL;
-        }
+        } 
+
         delete n; 
-
-
-        //now call split on the parent node put the entry node in the correct place. 
-        return split(wordNode->parent, wordNode);
+        return split(m->parent, m); 
     }
 };
 

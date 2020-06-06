@@ -18,15 +18,13 @@ int main(int argc, char* argv[]){
         while(true){
             getline(ifs, line);
             if(!ifs) break;
-            cout << t.insert(line) << endl;
-            a.insert(line);
-
+            t.insert(line); 
         }
         ifs.close();
     }
 
     //t.rangeSearch("a", "z");
-    //t.printTraversal();
+    t.printTraversal();
 
     //a.printHeight();
    // a.printTraversal();
