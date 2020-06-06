@@ -21,11 +21,7 @@ int TwoFive::insert(string word){
 int TwoFive::search(string word) const{
     TwoFiveNode* n = searchHelper(root, word);
     if(n==NULL) return 0; 
-
-    for(int i = 0; i < n->key_length; i++){
-        if(n->keys[i].first == word) return n->keys[i].second; 
-    }
-    return 0; 
+    return n->count(word); 
 }; 
 
 //range serach
@@ -164,31 +160,51 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* wordNode){
                 }
             }
         }
-        //find median 
-        pair<string, int> s[5]; 
-        for(int i = 0; i < n->key_length; i++){
-            s[i] = n->keys[i];
+        n->keys[4] = wordNode->keys[0];
+        int k; 
+        for(int i = 4; i > 0; i--){
+            if(n->keys[i] < n->keys[i-1]){
+                pair<string, int> temp = n->keys[i];
+                n->keys[i] = n->keys[i-1];
+                n->keys[i-1] = temp; 
+                int k = i-1; 
+            }
         }
-        s[4] = wordNode->keys[0];
-        sort(s, s + 5);
-        int med = 5/3;
-
+      
+        int med = 2;
+        //NEED TO INCLUDE POINTERS WHEN UPDATING LEFT AND RIGHT 
         //words less than medValue go in left node, greater go in right node
         for(int i = 0; i < 5; i++){
-            if(i < med){
-                left->keys[left->key_length] = s[i];
-                left->key_length++;
-            } else if (i==med){
-                wordNode->keys[0] = s[i];
+            if (i < med)
+            {
+                left->keys[left->key_length] = n->keys[i];
+                left->key_length++; 
+            } else if(i==med){
+                wordNode->keys[0] = n->keys[i];
             }else{
-                right->keys[right->key_length] = s[i];
+                right->keys[right->key_length] = n->keys[i];
                 right->key_length++; 
             }
         }
+        for(int i = 0; i < 5; i++){
+            if(i <= k){
+                left->children[i] = n->children[i];
+                if(n->children[i]!=NULL) left->child_length++; 
+            }else{
+                right->children[i] = n->children[i];
+                if(n->children[i]!=NULL) right->child_length++; 
+            }
+        }
+        
         wordNode->children[0] = left; 
         wordNode->child_length++; 
         wordNode->children[1] = right; 
         wordNode->child_length++; 
+
+        for(int i = 0; i < 6; i++){
+            n->children[i] = NULL;
+        }
+        delete n; 
 
 
         //now call split on the parent node put the entry node in the correct place. 

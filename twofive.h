@@ -10,9 +10,9 @@ using namespace std;
 
 struct TwoFiveNode{
     //key/values 
-    pair<string, int> keys[4];
+    pair<string, int> keys[5]; //extra value fold help inserting;
     //children
-    TwoFiveNode* children [5];
+    TwoFiveNode* children [6]; //extra value for help inserting;
     //height
     int height;
     //lenth of key array
@@ -69,6 +69,13 @@ struct TwoFiveNode{
             if(keys[i].first == word) return keys[i].second;     
         }
         return 0; 
+    }
+
+    int getIndex(string word){
+         for(int i = 0; i < key_length; i++){
+            if(keys[i].first == word) return i;   
+        }
+        return -1;
     }
 };
 

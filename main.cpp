@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
 
     string autograder = "/autograder/submission/PA3_dataset.txt";
     string home = "PA3_dataset.txt";
-    ifstream ifs(autograder);
+    ifstream ifs(home);
     string line;
 
        if(ifs.is_open()){
@@ -46,8 +46,8 @@ int main(int argc, char* argv[]){
 
             }
             else if(v[0] == "search"){
-                int c1 = tree25.search(v[1]);
-                int c2 = treeAVL.search(v[1]);
+                int c1 = treeAVL.search(v[1]);
+                int c2 = tree25.search(v[1]);
 
                 if(!c1){
                     cout << v[1] << " not found" << endl; 
@@ -65,6 +65,8 @@ int main(int argc, char* argv[]){
         } 
     }
 
+tree25.printTraversal();
+treeAVL.printTraversal();
       
 return 1; 
 }

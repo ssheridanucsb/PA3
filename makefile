@@ -2,7 +2,7 @@ CXX = clang++
 
 CXXFLAGS = -std=c++11 
 
-prog3.out: main.o avl.o twofive.o 
+prog1.out: main.o avl.o twofive.o 
 	${CXX} ${CXXFLAGS} $^ -o $@
 
 main.o: main.cpp
@@ -22,4 +22,4 @@ test.o: test.cpp
 
 
 clean: 
-	/bin/rm -f prog3.out *.o
+	/bin/rm -f prog3.out *.o test
