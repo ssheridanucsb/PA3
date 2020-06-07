@@ -94,10 +94,6 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
         return insertHelper(word, p); 
 
     }else if(n->key_length==4 && n->child_length==0){//if n is a full leaf split
-        if(n->contains(word)){
-            n->increment(word); 
-            return n; 
-        }
         TwoFiveNode* m = new TwoFiveNode(word);
         return split(n, m);
     }else{
@@ -122,7 +118,7 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         sort(n->keys, n->keys + n->key_length); 
         for(int i = 0; i < 5; i++){
             if(n->children[i]==m){
-                for(int j = 4; j > i; j--){
+                for(int j = n->key_length; j > i; j--){
                     n->children[j+1] = n->children[j]; 
                 }
                 n->children[i] = m->children[0]; 
@@ -131,9 +127,15 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
             }
         }
 
+        int l = 0; 
         for(int i = 0; i < 5; i++){
             m->children[i] = NULL; 
+            if(n->children[i]!=NULL){
+                n->children[i]->parent = n; 
+                l++;
+            }
         }
+        n->child_length=l; 
         delete m; 
         return n; 
 
@@ -195,7 +197,9 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
 
         if(n->parent!=NULL){
             for(int i = 0; i < 6; i++){
-                if(n->parent->children[i] == n) n->parent->children[i] = m; 
+                if(n->parent->children[i] == n){
+                    n->parent->children[i] = m;
+                    }
             }
         }
 
