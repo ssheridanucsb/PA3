@@ -12,7 +12,7 @@ struct TwoFiveNode{
     //key/values 
     pair<string, int> keys[5]; //extra value fold help inserting;
     //children
-    TwoFiveNode* children [5]; 
+    TwoFiveNode* children [6]; 
     //height
     int height;
     //lenth of key array
@@ -26,7 +26,7 @@ struct TwoFiveNode{
     TwoFiveNode(string word){
         pair<string, int> p(word, 1);
         keys[0] = p; 
-        for(int i = 1; i < 5; i++){
+        for(int i = 1; i < 6; i++){
             children[i] = NULL; 
         };
         height = 1; 
@@ -36,7 +36,7 @@ struct TwoFiveNode{
     };
     //default constructor 
     TwoFiveNode(){
-        for(int i = 1; i < 5; i++){
+        for(int i = 1; i < 6; i++){
             children[i] = NULL; 
         };
         height = 1; 

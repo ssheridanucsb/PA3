@@ -76,13 +76,14 @@ int TwoFive::insert(string word){
 //recursive insert helper function
 TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
     //if is not leaf, find correct path to follow 
-    if(n->child_length!=0){
-        //check if node contains word and increment 
-        if(n->contains(word)){
-            n->increment(word); 
-            return n; 
-        }
-
+    if(n==NULL){
+        TwoFiveNode* t = new TwoFiveNode(word); 
+        return t; 
+    }
+    else if(n->contains(word)){
+        n->increment(word); 
+    }
+    else if(n->child_length!=0){ //not a leaf
         TwoFiveNode* p = n->children[0];
         for(int i = 0; i < n->key_length; i++){
             if(word > n->keys[i].first){
@@ -92,25 +93,19 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
         //recursive call to new path 
         return insertHelper(word, p); 
 
-    }else if(n->key_length < 4){//if n is empty leaf insert
-    //check if contains word and increment if so 
-    if(n->contains(word)){
-            n->increment(word); 
-            return n; 
-        }
-        //otherwise add the word to the leaf 
-        n->keys[n->key_length] = pair<string, int>(word, 1); 
-        n->key_length++; 
-        sort(n->keys, n->keys + n->key_length);
-        return n; 
-
-    }else{//if n is a full leaf split
+    }else if(n->key_length==4 && n->child_length==0){//if n is a full leaf split
         if(n->contains(word)){
             n->increment(word); 
             return n; 
         }
         TwoFiveNode* m = new TwoFiveNode(word);
         return split(n, m);
+    }else{
+        //otherwise add the word to the leaf 
+        n->keys[n->key_length] = pair<string, int>(word, 1); 
+        n->key_length++; 
+        sort(n->keys, n->keys + n->key_length);
+        return n; 
     }
 };
 
@@ -121,7 +116,7 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         root = m; 
         root->height++; 
         return root; 
-    }else if(n->key_length!=4){
+    }else if(n->key_length<4){
         n->keys[n->key_length] = m->keys[0];
         n->key_length++; 
         sort(n->keys, n->keys + n->key_length); 
@@ -152,14 +147,52 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         TwoFiveNode* left = new TwoFiveNode; 
         TwoFiveNode* right = new TwoFiveNode; 
 
+        if(m->child_length!=0){
+            for(int i = 0; i < 6; i++){
+                if(n->children[i]==m) n->children[i] = m->children[0];
+            }
+            n->children[5] = m->children[1];
+
+            if(m->children[0]!=NULL){
+                m->children[0]->parent=n; 
+                 }
+            if(m->children[1]!=NULL){
+                m->children[1]->parent=n; 
+            }
+        }
+
+        TwoFiveNode* tempArray[6];
+        for(int i = 0; i < 6; i ++){
+            tempArray[i] = n->children[i]; 
+        }
+
+        for(int i = 0; i <6; i++){
+            TwoFiveNode* p = tempArray[i]; 
+            if(p!=NULL){
+                //re-sort children pointers 
+                if(p->keys[0] < n->keys[0]){
+                    n->children[0] = p; 
+                }else if(n->keys[0] < p->keys[0] && p->keys[0] < n->keys[1]){
+                    n->children[1] = p; 
+                }else if(n->keys[1] < p->keys[0] && p->keys[0] < n->keys[2]){
+                    n->children[2] = p; 
+                }else if(n->keys[2] < p->keys[0] && p->keys[0] < n->keys[3]){
+                    n->children[3] = p; 
+                }else if(n->keys[3] < p->keys[0] && p->keys[0] < n->keys[4]){
+                    n->children[4] = p; 
+                }else{
+                    n->children[5] = p; 
+                }
+            }
+        } 
+
         m->parent = n->parent; 
         m->children[0] = left; 
-        m->child_length++; 
         m->children[1] = right; 
-        m->child_length++;
+        m->child_length = 2; 
 
         if(n->parent!=NULL){
-            for(int i = 0; i < 5; i++){
+            for(int i = 0; i < 6; i++){
                 if(n->parent->children[i] == n) n->parent->children[i] = m; 
             }
         }
@@ -178,9 +211,9 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         }
 
         //split child pointers
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 6; i++){
             if(n->children[i] != NULL){
-                if(n->children[i]->keys[0] < n->keys[med]){
+                if(i <= med){
                     left->children[left->child_length] = n->children[i]; 
                     left->child_length++; 
                 }else{
@@ -192,7 +225,7 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         }
 
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 6; i++){
             n->children[i] = NULL;
         } 
 
