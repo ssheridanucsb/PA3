@@ -18,6 +18,9 @@ int main(int argc, char* argv[]){
     cout << t.insert("e") << endl;
     cout << t.insert("f") << endl;
     cout << t.insert("g") << endl;
+    cout << t.insert("h") << endl;
+
+
 
     
     //cout << t.insert("l") << endl; 

@@ -146,6 +146,8 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         //create left and right nodes
         TwoFiveNode* left = new TwoFiveNode; 
         TwoFiveNode* right = new TwoFiveNode; 
+        left->parent = m; 
+        right->parent = m; 
 
         if(m->child_length!=0){
             for(int i = 0; i < 6; i++){
@@ -154,10 +156,10 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
             n->children[5] = m->children[1];
 
             if(m->children[0]!=NULL){
-                m->children[0]->parent=n; 
+                m->children[0]->parent=NULL; 
                  }
             if(m->children[1]!=NULL){
-                m->children[1]->parent=n; 
+                m->children[1]->parent=NULL; 
             }
         }
 
@@ -214,9 +216,11 @@ TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
         for(int i = 0; i < 6; i++){
             if(n->children[i] != NULL){
                 if(i <= med){
+                    n->children[i]->parent = left; 
                     left->children[left->child_length] = n->children[i]; 
                     left->child_length++; 
                 }else{
+                    n->children[i]->parent = right; 
                     right->children[right->child_length] = n->children[i]; 
                     right->child_length++; 
                 }
