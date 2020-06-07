@@ -1,7 +1,7 @@
 #include "twofive.h"
 
 //constructor 
-TwoFive::TwoFive(): root(NULL) {};
+TwoFive::TwoFive(): root(NULL), height(0) {};
 
 //destructor
 TwoFive::~TwoFive(){
@@ -37,7 +37,7 @@ void TwoFive::printHeight() const {
     if(root==NULL){
         cout << "height = [" << 0 << "]" << endl; 
     }else{
-        cout << "height = [" << root->height << "]" << endl; 
+        cout << "height = [" << height << "]" << endl; 
     }
 };
 
@@ -68,6 +68,7 @@ void TwoFive::printHelper(TwoFiveNode* n) const {
 int TwoFive::insert(string word){
     if(root==NULL){
         root = new TwoFiveNode(word);
+        height++; 
         return 1; 
     }
     insertHelper(word, root);
@@ -109,8 +110,8 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
 //split helper functions 
 TwoFiveNode* TwoFive::split(TwoFiveNode* n, TwoFiveNode* m){
     if(n==NULL){
-        root = m; 
-        root->height++; 
+        root = m;
+        height++;  
         return root; 
     }else if(n->key_length<4){
         n->keys[n->key_length] = m->keys[0];

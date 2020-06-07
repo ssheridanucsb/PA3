@@ -13,8 +13,6 @@ struct TwoFiveNode{
     pair<string, int> keys[5]; //extra value fold help inserting;
     //children
     TwoFiveNode* children [6]; 
-    //height
-    int height;
     //lenth of key array
     int key_length; 
     //length of child pointer array; 
@@ -28,8 +26,7 @@ struct TwoFiveNode{
         keys[0] = p; 
         for(int i = 1; i < 6; i++){
             children[i] = NULL; 
-        };
-        height = 1; 
+        }; 
         key_length = 1; 
         child_length = 0; 
         parent = NULL;
@@ -38,8 +35,7 @@ struct TwoFiveNode{
     TwoFiveNode(){
         for(int i = 1; i < 6; i++){
             children[i] = NULL; 
-        };
-        height = 1; 
+        }; 
         key_length = 0; 
         child_length = 0; 
         parent = NULL;
@@ -105,6 +101,8 @@ class TwoFive{
     private: 
     //root pointer
     TwoFiveNode* root;
+
+    int height; 
 
     //recursive insert helper function
     TwoFiveNode* insertHelper(string word, TwoFiveNode* n);
