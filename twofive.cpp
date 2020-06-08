@@ -82,8 +82,7 @@ TwoFiveNode* TwoFive::insertHelper(string word, TwoFiveNode* n){
         return t; 
     }
     else if(n->contains(word)){
-        n->increment(word);
-        return n;  
+        n->increment(word);  
     }
     else if(n->child_length!=0){ //not a leaf
         TwoFiveNode* p = n->children[0];

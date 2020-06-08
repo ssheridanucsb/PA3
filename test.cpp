@@ -2,6 +2,7 @@
 #include "twofive.h"
 #include <iostream> 
 #include <fstream>
+#include <string>
 
 
 using namespace std; 
@@ -36,25 +37,25 @@ int main(int argc, char* argv[]){
     string line;
 
     int count = 0; 
+
     if(ifs.is_open()){
         while(true){
             getline(ifs, line);
             if(!ifs) break;
             line = line.substr(0, line.size( )-1);
-            cout << a.insert(line) << endl; 
+            tree.insert(line);
+            a.insert(line);
+            count++; 
+            cout << count << endl; 
         }
         ifs.close();
     }
 
+    cout << "here" << endl; 
     //tree.printTraversal(); 
     //tree.printHeight(); 
     //cout << tree.search("broadcasting") << endl; 
     //cout << tree.insert("computers") << endl; 
-
-    a.printTraversal(); 
-    a.printHeight(); 
-    cout << a.search("broadcasting") << endl; 
-    cout << a.insert("computers") << endl; 
 
     return 1; 
 }

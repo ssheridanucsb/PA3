@@ -7,15 +7,21 @@
 #include <vector>
 #include <sstream>
 #include <cstring>
+#include <algorithm>
+#include <utility>
+
+using namespace std; 
 
 int main(int argc, char* argv[]){ 
     TwoFive tree25; 
-    AVL treeAVL;  
+    TwoFive treeAVL;  
 
     string autograder = "/autograder/submission/PA3_dataset.txt";
     string home = "PA3_dataset.txt";
-    ifstream ifs(autograder);
+    ifstream ifs(home);
     string line;
+    int count = 0; 
+    
 
     if(ifs.is_open()){
         while(true){
@@ -23,7 +29,7 @@ int main(int argc, char* argv[]){
             if(!ifs) break;
             line = line.substr(0, line.size( )-1);
             treeAVL.insert(line);
-            tree25.insert(line); 
+            tree25.insert(line);
         }
         ifs.close();
     }
@@ -65,6 +71,6 @@ int main(int argc, char* argv[]){
             }
         } 
     }
-      
+    
 return 1; 
 }
