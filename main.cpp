@@ -17,12 +17,13 @@ int main(int argc, char* argv[]){
     ifstream ifs(home);
     string line;
 
-       if(ifs.is_open()){
+    if(ifs.is_open()){
         while(true){
             getline(ifs, line);
             if(!ifs) break;
-            tree25.insert(line);
+            line = line.substr(0, line.size( )-1);
             treeAVL.insert(line);
+            tree25.insert(line); 
         }
         ifs.close();
     }
@@ -64,9 +65,6 @@ int main(int argc, char* argv[]){
             }
         } 
     }
-
-tree25.printTraversal();
-treeAVL.printTraversal();
       
 return 1; 
 }

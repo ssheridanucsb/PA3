@@ -16,49 +16,17 @@ int AVL::height(Node* n) const{
 
 //get balance factor of node
 int AVL::balanceFactor(Node* n) const{
-    if(n==NULL) return 0; 
+    if(n==NULL) return 0;
     return height(n->left) - height(n->right);
 };
 
 int AVL::max(int a, int b){
-    return (a<b)? b:a;
-};
-
-//perform a right rotation
-Node* AVL::rightRotate(Node* y){
-    Node* x = y->left;
-    Node* t = x->right; 
-
-    //rotate
-    x->right = y; 
-    y->left = t; 
-
-    //update heights
-    y->height = max(height(y->left), height(y->right)) + 1;
-    x->height = max(height(x->left), height(x->right)) + 1;
-
-    return x; 
-};
-
-//perform a left rotation
-Node* AVL::leftRotate(Node* x){
-    Node* y = x->right; 
-    Node* t = y->left; 
-
-    //rotate
-    y->left = x; 
-    x->right= t; 
-
-    //update heights
-    x->height = max(height(x->left), height(x->right)) + 1;
-    y->height = max(height(y->left), height(y->right)) + 1;
-
-    return y; 
+    return (a<b) ? b:a;
 };
 
 //helper function
 Node* AVL::getNodeFor(string word, Node* n) const{
-    if(n){
+    if(n!=NULL){
       //check for value
       if(n->word == word){
         return n;
@@ -73,7 +41,7 @@ Node* AVL::getNodeFor(string word, Node* n) const{
       }
 
       }
-    return 0;
+    return NULL;
 };
 
 //search funciton 
@@ -85,41 +53,108 @@ int AVL::search(string word) const{
   return 0;
 };
 
-int AVL::insert(string word){
-  root = insertHelper(word, root);
-  return getNodeFor(word, root)->count;
-};
 
+
+int AVL::insert(string word){
+    root = insertHelper(word, root); 
+    Node* i = getNodeFor(word, root); 
+    int c = i->count; 
+    balance(i); 
+    return c; 
+};
 
 Node* AVL::insertHelper(string word, Node* n){
     if(n==NULL){
-        Node * t = new Node(word);
-        return t;
+        return new Node(word); 
     }
-    if(word < n->word) n->left = insertHelper(word, n->left);
-    else if(word == n->word){
-        n->count++;
+    if(word < n->word){
+        n->left = insertHelper(word, n->left);
+    }else if(word > n->word){
+        n->right = insertHelper(word, n->right); 
+    }else{
+        n->count++; 
+        return n; 
     }
-    else if(word > n->word) n->right = insertHelper(word, n->right);
+    
+    if(n->right!=NULL) n->right->parent = n; 
+    if(n->left!=NULL) n->left->parent = n;
+
     n->height = 1 + max(height(n->left), height(n->right));
-    int bal = balanceFactor(n);
-    if(bal > 2){
-        if(word < n->left->word){
-            return rightRotate(n);
-        }else{
-            n->left = leftRotate(n->left);
-            return rightRotate(n);
-        }
-    }else if(bal < -2){
-        if(word > n->right->word){
-            return leftRotate(n);
-        } else{
-            n->right = rightRotate(n->right);
-            return leftRotate(n);
-        }
-    }
     return n; 
 };
+
+void AVL::balance(Node* i){
+    if(i->parent!=NULL){//check if parent exists
+        if(i->parent->parent!=NULL){//check if greatgrandparent exists, there must be a greatgrandparent to violate the balance condition
+            if(i->parent->parent->parent!=NULL){
+                Node* n = i->parent; //parent of inserted node i, which may violate the balance constraint 
+                Node* p = n->parent; //parent of that nodes
+                Node* gp = p->parent; //grandparent of that node
+                if(gp->right==NULL){//left sided sub tree
+                    if(p->left->left == i){//left left 
+                        Node* s = p->right;
+                        p->parent = gp->parent; 
+                        if(s==NULL){
+                            p->right = gp;
+                            gp->parent = p;  
+                        }else{
+                            p->right = s; 
+                            s->right=gp; 
+                            gp->parent=s; 
+                        }
+                        gp->right = NULL; 
+                        gp->left = NULL; 
+                    }else if(p->left->right == i){//left right
+                        Node* s = p->right;
+                        p->parent = gp->parent; 
+                        if(s==NULL){
+                            p->right=gp; 
+                            gp->parent=p; 
+                        }else{
+                            s->right = gp;
+                            gp->parent = s;  
+                        }
+                        gp->right=NULL; 
+                        gp->left=NULL; 
+                        i->parent=p; 
+                        n->parent=i; 
+                        n->right=NULL; 
+                        n->left=NULL; 
+                    }else if(p->right->left == i){//right left 
+                        Node* s = p->left; 
+                        i->parent = gp->parent; 
+                        p->parent = i; 
+                        if(s!=NULL){
+                            s->parent=i; 
+                        }
+                        i->right = n; 
+                        n->right = gp; 
+                        n->left=NULL; 
+                        gp->right=NULL; 
+                        gp->left=NULL; 
+                    }else{//right right
+                        Node* s = p->left;
+                        n->parent=gp->parent; 
+                        i->parent=n; 
+                        i->right=gp;
+                        gp->parent=i; 
+                        gp->right=NULL; 
+                        gp->left=NULL; 
+                        p->right=NULL; 
+                        p->left = s;  
+                        p->parent = n; 
+                    }
+                }else if(gp->left==NULL){//right sided sub tree 
+
+
+                }else{
+                    return; 
+                }
+            } 
+        }
+    }
+};
+
 
 void AVL::rangeSearchHelper(Node* n, string s1, string s2) const{
     if(!n) return;

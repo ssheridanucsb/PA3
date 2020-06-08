@@ -10,10 +10,11 @@ struct Node{
     string word; 
     int count; 
     Node* left; 
-    Node* right; 
+    Node* right;
+    Node* parent;  
     int height; 
 
-    Node(string word): word(word), count(1), left(NULL), right(NULL), height(1) {}; 
+    Node(string word): word(word), count(1), left(NULL), right(NULL), parent(NULL), height(1) {}; 
     ~Node(){
         delete left;
         delete right;
@@ -45,9 +46,6 @@ class AVL{
     //helper functions 
     int height(Node *n) const;
 
-    Node* rightRotate(Node* y);
-    Node* leftRotate(Node* x);
-
     int balanceFactor(Node* n) const; 
 
     int max(int a, int b); 
@@ -60,6 +58,8 @@ class AVL{
     void rangeSearchHelper(Node* n, string s1, string s2) const;
 
     void printHelper(Node* n) const;
+
+    void balance(Node* i); 
 
 };
 

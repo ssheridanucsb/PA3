@@ -8,8 +8,6 @@ using namespace std;
 
 
 int main(int argc, char* argv[]){ 
-    TwoFive t; 
-    AVL a; 
 
     //cout << t.insert("m") << endl;
 
@@ -32,23 +30,34 @@ int main(int argc, char* argv[]){
    // a.printTraversal();
 
     TwoFive tree; 
+    AVL a; 
     string home = "PA3_dataset.txt";
     ifstream ifs(home);
     string line;
 
+    int count = 0; 
     if(ifs.is_open()){
         while(true){
             getline(ifs, line);
             if(!ifs) break;
             line = line.substr(0, line.size( )-1);
             tree.insert(line);
+            cout << a.insert(line) << endl; 
+            count++; 
+            cout << count << endl; 
         }
         ifs.close();
     }
 
-    tree.printTraversal(); 
-    tree.printHeight(); 
+    //tree.printTraversal(); 
+    //tree.printHeight(); 
+    //cout << tree.search("broadcasting") << endl; 
+    //cout << tree.insert("computers") << endl; 
 
+    a.printTraversal(); 
+    a.printHeight(); 
+    cout << a.search("broadcasting") << endl; 
+    cout << a.insert("computers") << endl; 
 
     return 1; 
 }

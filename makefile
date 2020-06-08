@@ -22,4 +22,4 @@ test.o: test.cpp
 
 
 clean: 
-	/bin/rm -f prog3.out *.o test
+	/bin/rm -f prog1.out *.o test
