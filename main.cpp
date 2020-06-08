@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
 
     string autograder = "/autograder/submission/PA3_dataset.txt";
     string home = "PA3_dataset.txt";
-    ifstream ifs(home);
+    ifstream ifs(autograder);
     string line;
 
     if(ifs.is_open()){

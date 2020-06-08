@@ -57,10 +57,7 @@ int AVL::search(string word) const{
 
 int AVL::insert(string word){
     root = insertHelper(word, root); 
-    Node* i = getNodeFor(word, root); 
-    int c = i->count; 
-    balance(i); 
-    return c; 
+    return getNodeFor(word, root)->count; 
 };
 
 Node* AVL::insertHelper(string word, Node* n){
@@ -76,84 +73,67 @@ Node* AVL::insertHelper(string word, Node* n){
         return n; 
     }
     
-    if(n->right!=NULL) n->right->parent = n; 
-    if(n->left!=NULL) n->left->parent = n;
-
     n->height = 1 + max(height(n->left), height(n->right));
+    int b = balanceFactor(n); 
+
+    if (b > 1 && word < n->left->word)  
+        return rightRotate(n);  
+  
+    // Right Right Case  
+    if (b < -1 && word > n->right->word)  
+        return leftRotate(n);  
+  
+    // Left Right Case  
+    if (b > 1 && word > n->left->word)  
+    {  
+        n->left = leftRotate(n->left);  
+        return rightRotate(n);  
+    }  
+  
+    // Right Left Case  
+    if (b < -1 && word < n->right->word)  
+    {  
+        n->right = rightRotate(n->right);  
+        return leftRotate(n);  
+    } 
+
     return n; 
 };
 
-void AVL::balance(Node* i){
-    if(i->parent!=NULL){//check if parent exists
-        if(i->parent->parent!=NULL){//check if greatgrandparent exists, there must be a greatgrandparent to violate the balance condition
-            if(i->parent->parent->parent!=NULL){
-                Node* n = i->parent; //parent of inserted node i, which may violate the balance constraint 
-                Node* p = n->parent; //parent of that nodes
-                Node* gp = p->parent; //grandparent of that node
-                if(gp->right==NULL){//left sided sub tree
-                    if(p->left->left == i){//left left 
-                        Node* s = p->right;
-                        p->parent = gp->parent; 
-                        if(s==NULL){
-                            p->right = gp;
-                            gp->parent = p;  
-                        }else{
-                            p->right = s; 
-                            s->right=gp; 
-                            gp->parent=s; 
-                        }
-                        gp->right = NULL; 
-                        gp->left = NULL; 
-                    }else if(p->left->right == i){//left right
-                        Node* s = p->right;
-                        p->parent = gp->parent; 
-                        if(s==NULL){
-                            p->right=gp; 
-                            gp->parent=p; 
-                        }else{
-                            s->right = gp;
-                            gp->parent = s;  
-                        }
-                        gp->right=NULL; 
-                        gp->left=NULL; 
-                        i->parent=p; 
-                        n->parent=i; 
-                        n->right=NULL; 
-                        n->left=NULL; 
-                    }else if(p->right->left == i){//right left 
-                        Node* s = p->left; 
-                        i->parent = gp->parent; 
-                        p->parent = i; 
-                        if(s!=NULL){
-                            s->parent=i; 
-                        }
-                        i->right = n; 
-                        n->right = gp; 
-                        n->left=NULL; 
-                        gp->right=NULL; 
-                        gp->left=NULL; 
-                    }else{//right right
-                        Node* s = p->left;
-                        n->parent=gp->parent; 
-                        i->parent=n; 
-                        i->right=gp;
-                        gp->parent=i; 
-                        gp->right=NULL; 
-                        gp->left=NULL; 
-                        p->right=NULL; 
-                        p->left = s;  
-                        p->parent = n; 
-                    }
-                }else if(gp->left==NULL){//right sided sub tree 
+    Node* AVL::rightRotate(Node* y){
+        Node* x = y->left; 
+        Node* t = x->right; 
 
+        x->right = y; 
+        y->left = t; 
 
-                }else{
-                    return; 
-                }
-            } 
-        }
-    }
-};
+        y->height = max(height(y->left), 
+                    height(y->right)) + 1;  
+
+        x->height = max(height(x->left), 
+                    height(x->right)) + 1; 
+
+        return x;  
+    };
+        
+    Node* AVL::leftRotate(Node* x){
+            Node *y = x->right;  
+            Node *T2 = y->left;  
+  
+      
+            y->left = x;  
+            x->right = T2;  
+  
+      
+            x->height = max(height(x->left),     
+                    height(x->right)) + 1;  
+            y->height = max(height(y->left),  
+                    height(y->right)) + 1;  
+  
+ 
+            return y;
+    }; 
+
 
 
 void AVL::rangeSearchHelper(Node* n, string s1, string s2) const{

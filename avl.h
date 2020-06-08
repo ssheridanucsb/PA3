@@ -11,10 +11,9 @@ struct Node{
     int count; 
     Node* left; 
     Node* right;
-    Node* parent;  
     int height; 
 
-    Node(string word): word(word), count(1), left(NULL), right(NULL), parent(NULL), height(1) {}; 
+    Node(string word): word(word), count(1), left(NULL), right(NULL), height(0) {}; 
     ~Node(){
         delete left;
         delete right;
@@ -59,7 +58,9 @@ class AVL{
 
     void printHelper(Node* n) const;
 
-    void balance(Node* i); 
+    Node* rightRotate(Node* y); 
+
+    Node* leftRotate(Node* x); 
 
 };
 

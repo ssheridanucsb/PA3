@@ -41,10 +41,7 @@ int main(int argc, char* argv[]){
             getline(ifs, line);
             if(!ifs) break;
             line = line.substr(0, line.size( )-1);
-            tree.insert(line);
             cout << a.insert(line) << endl; 
-            count++; 
-            cout << count << endl; 
         }
         ifs.close();
     }
